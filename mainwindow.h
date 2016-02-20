@@ -11,6 +11,9 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+signals:
+    void filenameChanged(QString);
+
 public slots:
     void readFile(void);
 
