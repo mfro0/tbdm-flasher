@@ -19,7 +19,37 @@ MainWindow::~MainWindow()
 QByteArray convertSRecords(QString s)
 {
     QByteArray data;
+    bool failure;
+
+    if (s.left(1).at(0) != 'S')
+    {
+        qDebug() << "illegal S-Record found" << endl;
+        return data;
+    }
+
+    switch (s.mid(1, 1).at(0).digitValue())
+    {
+        case 0:
+            qDebug() << "S0 header found." << endl;
+            break;
+
+        case 1:
+            qDebug() << "S1 record found" << endl;
+            break;
+
+        case 2:
+            qDebug() << "S2 record found" << endl;
+            break;
+
+        case 3:
+            qDebug() << "S3 record found. Address = " << s.mid(4, 8) << ", size = " << s.mid(2, 2).toInt(&failure, 16);
+            break;
+
+        case 4:
+            break;
+    }
     qDebug() << s << endl;
+
     return data;
 }
 
