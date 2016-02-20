@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>548</width>
-    <height>145</height>
+    <width>546</width>
+    <height>232</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -72,13 +72,33 @@
      </item>
     </layout>
    </widget>
+   <widget class="QComboBox" name="portName">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>110</y>
+      <width>92</width>
+      <height>28</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="baudRate">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>110</y>
+      <width>92</width>
+      <height>28</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>548</width>
+     <width>546</width>
      <height>26</height>
     </rect>
    </property>
@@ -103,8 +123,8 @@
    <slot>readFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>64</y>
+     <x>441</x>
+     <y>77</y>
     </hint>
     <hint type="destinationlabel">
      <x>354</x>
@@ -128,9 +148,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>portName</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>populateBaudrates()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>96</x>
+     <y>164</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>104</x>
+     <y>195</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>filenameChanged(QString)</signal>
   <slot>readFile()</slot>
+  <slot>populateBaudrates()</slot>
  </slots>
 </ui>

@@ -2,13 +2,20 @@
 #include "ui_mainwindow.h"
 #include <QtWidgets>
 #include <qfiledialog.h>
-
+#include <QSerialPortInfo>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QList<QSerialPortInfo> ports = QSerialPortInfo::availablePorts();
+
+    for (int i = 0; i < ports.size(); i++)
+    {
+        ui->portName->addItem(ports.at(i).portName());
+    }
 }
 
 MainWindow::~MainWindow()
@@ -16,18 +23,21 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
 QByteArray convertSRecords(QString s)
 {
     QByteArray data;
     bool failure;
+    long address;
+    int size;
 
-    if (s.left(1).at(0) != 'S')
+    if (s.leftRef(1).at(0) != 'S')
     {
         qDebug() << "illegal S-Record found" << endl;
         return data;
     }
 
-    switch (s.mid(1, 1).at(0).digitValue())
+    switch (s.midRef(1, 1).at(0).digitValue())
     {
         case 0:
             qDebug() << "S0 header found." << endl;
@@ -42,7 +52,11 @@ QByteArray convertSRecords(QString s)
             break;
 
         case 3:
-            qDebug() << "S3 record found. Address = " << s.mid(4, 8) << ", size = " << s.mid(2, 2).toInt(&failure, 16);
+            address = s.midRef(4, 8).toLong(&failure, 16);
+            size = s.midRef(2, 2).toInt(&failure, 16);
+
+            qDebug() << QString("S3 record found. Address = 0x%1").arg(address, 8, 16) <<
+                        ", size = " << size;
             break;
 
         case 4:
