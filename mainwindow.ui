@@ -6,114 +6,116 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>546</width>
-    <height>232</height>
+    <width>674</width>
+    <height>144</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Teensy BDM Flasher</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QProgressBar" name="progressBar">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>10</y>
-      <width>401</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="value">
-     <number>0</number>
-    </property>
-    <property name="format">
-     <string>%p%</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="filenameLabel">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>40</y>
-      <width>391</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>10</y>
-      <width>98</width>
-      <height>64</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QPushButton" name="selectFileButton">
-       <property name="text">
-        <string>Select File</string>
-       </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <widget class="QWidget" name="mainPage">
+       <widget class="QWidget" name="">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>10</y>
+          <width>611</width>
+          <height>56</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QProgressBar" name="progressBar">
+             <property name="value">
+              <number>0</number>
+             </property>
+             <property name="format">
+              <string>%p%</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="filenameLabel">
+             <property name="text">
+              <string>TextLabel</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QPushButton" name="selectFileButton">
+             <property name="text">
+              <string>Select File</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="flashButton">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Flash</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
       </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="flashButton">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Flash</string>
-       </property>
+      <widget class="QWidget" name="optionsPage">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QGroupBox" name="groupBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="title">
+           <string>Serial Port</string>
+          </property>
+          <property name="flat">
+           <bool>true</bool>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+          <layout class="QFormLayout" name="formLayout">
+           <item row="0" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QComboBox" name="portName"/>
+             </item>
+             <item>
+              <widget class="QComboBox" name="baudRate"/>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QGroupBox" name="groupBox">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>90</y>
-      <width>210</width>
-      <height>65</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Serial Port</string>
-    </property>
-    <property name="flat">
-     <bool>true</bool>
-    </property>
-    <property name="checkable">
-     <bool>true</bool>
-    </property>
-    <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QComboBox" name="portName"/>
-       </item>
-       <item>
-        <widget class="QComboBox" name="baudRate"/>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>546</width>
-     <height>25</height>
+     <width>674</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>
@@ -131,50 +133,34 @@
  <resources/>
  <connections>
   <connection>
-   <sender>selectFileButton</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>readFile()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>441</x>
-     <y>77</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>354</x>
-     <y>117</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>MainWindow</sender>
    <signal>filenameChanged(QString)</signal>
    <receiver>filenameLabel</receiver>
    <slot>setText(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>205</x>
-     <y>95</y>
+     <x>344</x>
+     <y>204</y>
     </hint>
     <hint type="destinationlabel">
-     <x>140</x>
-     <y>89</y>
+     <x>204</x>
+     <y>81</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>portName</sender>
-   <signal>currentIndexChanged(QString)</signal>
+   <sender>selectFileButton</sender>
+   <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>populateBaudrates()</slot>
+   <slot>readFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>96</x>
-     <y>164</y>
+     <x>477</x>
+     <y>57</y>
     </hint>
     <hint type="destinationlabel">
-     <x>104</x>
-     <y>195</y>
+     <x>344</x>
+     <y>204</y>
     </hint>
    </hints>
   </connection>

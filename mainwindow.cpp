@@ -3,6 +3,8 @@
 #include <QtWidgets>
 #include <qfiledialog.h>
 #include <QSerialPortInfo>
+#include <QtDebug>
+
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -77,23 +79,20 @@ int FlashFile::read(QString s19Filename)
     return 0;
 }
 
+uint16_t byteSwap(uint16_t w)
+{
+    return ((w & 0xff) << 8) | ((w & 0xff00) >> 8);
+}
+
+uint32_t byteSwap(uint32_t l)
+{
+    return byteSwap((uint16_t)((l >> 16) & 0xffff)) | byteSwap((uint16_t)((l << 16) & 0xffff0000));
+}
+
 bool FlashFile::checkChecksum(QString &s, uint32_t address, uint8_t byte_count, QByteArray &data)
 {
     uint16_t cs = 0;
     bool ok;
-
-    union swap_uint32
-    {
-        uint32_t i;
-        uint8_t a[4];
-    };
-
-    swap_uint32 addr;
-
-    addr.i = address;
-    uint8_t tmp = addr.a[0];
-    addr.a[0] = addr.a[3];
-    addr.a[3] = tmp;
 
     uint8_t srec_cs = s.midRef(s.length() - 3, 2).toInt(&ok, 16);
     if (!ok)
@@ -120,15 +119,22 @@ bool FlashFile::checkChecksum(QString &s, uint32_t address, uint8_t byte_count, 
     {
         return true;
     }
-    qDebug() << "checksum check failed. S-Record = " << srec_cs << " data = " << cs << endl;
+    qDebug() << "checksum check failed. S-Record = " <<
+                QString("%1").arg(srec_cs, 0, 16) << " data = " <<
+                QString("%1").arg(cs, 0, 16) <<
+                "data.size() = " << data.size() <<
+                endl;
+    qDebug() << QString("%1").arg(data.size() + 5, 0, 16) << QString("%1").arg((long) address, 0, 16) << data.toHex() << endl;
     return false;
 }
 
 int FlashFile::convertSRecords(QString &s)
 {
     bool good;
-    long address;
+    uint32_t address;
     int byte_count;
+    int checksum;
+    QByteArray data;
 
     if (s.leftRef(1).at(0) != 'S')
     {
@@ -151,13 +157,21 @@ int FlashFile::convertSRecords(QString &s)
             break;
 
         case 3:
-            address = s.midRef(4, 8).toLong(&good, 16);
+            qDebug() << s.midRef(4, 8) << endl;
+            address = s.midRef(4, 8).toULong(&good, 16);
+            if (!good)
+            {
+                qDebug() << "address conversion failed!" << endl;
+                return -1;
+            }
+
             byte_count = s.midRef(2, 2).toInt(&good, 16);
 
-            for (int i = 12; i <= byte_count * 2; i += 2)
+            checksum = s.midRef(s.length() - 3, 2).toInt(&good, 16);
+
+            for (int i = 12; i <= (byte_count - 6) * 2 + 12; i += 2)
             {
                 uint8_t byte;
-                QByteArray data;
 
                 byte = s.midRef(i, 2).toInt(&good, 16);
                 if (good)
@@ -168,15 +182,24 @@ int FlashFile::convertSRecords(QString &s)
                 {
                     return -1;
                 }
-                // calculate and compare checksum
-                if (checkChecksum(s, address, byte_count, data) == 0)
-                {
-                    binary->append(data);
-                }
-                else
-                {
-                    return -1;
-                }
+            }
+
+            qDebug() << "address =" << QString("%1").arg(address, 0, 16) <<
+                        "byte_count = " << byte_count << "length = " << data.length() << " checksum = " << checksum << endl;
+
+            // calculate and compare checksum
+            if (checkChecksum(s, address, byte_count, data) == 0)
+            {
+                binary->append(data);
+            }
+            else
+            {
+                return -1;
+            }
+
+            for (int i = 0; i < binary->length(); i++)
+            {
+                // qDebug() << ""
             }
             break;
 
