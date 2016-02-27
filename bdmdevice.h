@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 class QByteArray;
+class BDMCommand;
 
 class BDMDevice
 {
@@ -49,6 +50,11 @@ public:
 
     virtual uint32_t read_dbgreg(int regnum) = 0;
     virtual void write_dbgreg(int regnum, uint32_t value) = 0;
+
+private:
+    virtual void send_command(BDMCommand *command) = 0;
+    virtual uint32_t receive_result(void) = 0;
+
 };
 
 #endif // BDMDEVICE_H
