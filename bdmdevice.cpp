@@ -2,6 +2,5 @@
 
 BDMDevice::BDMDevice()
 {
-
 }
 
