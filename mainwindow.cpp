@@ -36,11 +36,35 @@ void MainWindow::readFile(void)
                                                        tr("*.s19"));
 
     QFileInfo fi(s19Filename);
-    filenameChanged(fi.fileName() + "(" + fi.created().toString() + ")");
+    filenameChanged(fi.fileName() + " (" + fi.created().toString() + ")");
 
     f->read(s19Filename);
+    qDebug() << "file size = " << f->fileSize() << endl;
+
+    filenameChanged(fi.fileName() + ", " + QString("%1").arg(f->fileSize()) + " Bytes, " +
+                    fi.created().toString());
 
     ui->flashButton->setEnabled(true);
+}
+
+void MainWindow::flashFile(void)
+{
+    const int blockSize = 4096;
+
+    qDebug() << "flashFile()" << endl;
+    if (f->data() != NULL)
+    {
+        for (int i = 0; i < f->data()->length(); i += blockSize)
+        {
+            QByteArray block = f->data()->mid(i, blockSize);
+
+            for (int j = 0; j < blockSize; j++)
+            {
+                qDebug() << QString("%1").arg((int) block.at(i)) << endl;
+            }
+
+        }
+    }
 }
 
 FlashFile::FlashFile(void)
@@ -62,19 +86,18 @@ int FlashFile::read(QString s19Filename)
         return -1;
     }
 
-    int length = 0;
-    int size = fi.size();
-
     while (! f.atEnd())
     {
         QString line = f.readLine();
-        length += line.length();
-        double percentage = (double) length / (double) size * 100.0;
-        // ui->progressBar->setValue((int) percentage);
-        convertSRecords(line);
+
+        if (!convertSRecords(line))
+        {
+            break;
+        }
     }
     f.close();
-    qDebug() << binary;
+
+    qDebug() << binary->length() << "bytes read." << endl;
 
     return 0;
 }
@@ -128,12 +151,11 @@ bool FlashFile::checkChecksum(QString &s, uint32_t address, uint8_t byte_count, 
     return false;
 }
 
-int FlashFile::convertSRecords(QString &s)
+bool FlashFile::convertSRecords(QString &s)
 {
     bool good;
     uint32_t address;
     int byte_count;
-    int checksum;
     QByteArray data;
 
     if (s.leftRef(1).at(0) != 'S')
@@ -157,17 +179,14 @@ int FlashFile::convertSRecords(QString &s)
             break;
 
         case 3:
-            qDebug() << s.midRef(4, 8) << endl;
             address = s.midRef(4, 8).toULong(&good, 16);
             if (!good)
             {
                 qDebug() << "address conversion failed!" << endl;
-                return -1;
+                return false;
             }
 
             byte_count = s.midRef(2, 2).toInt(&good, 16);
-
-            checksum = s.midRef(s.length() - 3, 2).toInt(&good, 16);
 
             for (int i = 12; i <= (byte_count - 6) * 2 + 12; i += 2)
             {
@@ -180,26 +199,19 @@ int FlashFile::convertSRecords(QString &s)
                 }
                 else
                 {
-                    return -1;
+                    qDebug() << "data conversion failed!" << endl;
+                    return false;
                 }
             }
 
-            qDebug() << "address =" << QString("%1").arg(address, 0, 16) <<
-                        "byte_count = " << byte_count << "length = " << data.length() << " checksum = " << checksum << endl;
-
             // calculate and compare checksum
-            if (checkChecksum(s, address, byte_count, data) == 0)
+            if (checkChecksum(s, address, byte_count, data))
             {
                 binary->append(data);
             }
             else
             {
-                return -1;
-            }
-
-            for (int i = 0; i < binary->length(); i++)
-            {
-                // qDebug() << ""
+                return false;
             }
             break;
 
@@ -221,7 +233,6 @@ int FlashFile::convertSRecords(QString &s)
         default:
             qDebug() << "illegal S-Record " << s << endl;
     }
-    qDebug() << s << endl;
 
-    return 0;
+    return true;
 }

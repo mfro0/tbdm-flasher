@@ -19,6 +19,6 @@ HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
 
-#LIBS += -lusb-1.0
+LIBS += -lusb-1.0
 
 DISTFILES +=

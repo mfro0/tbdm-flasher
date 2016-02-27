@@ -6,72 +6,72 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>674</width>
-    <height>144</height>
+    <width>688</width>
+    <height>187</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Teensy BDM Flasher</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <layout class="QHBoxLayout" name="horizontalLayout_4">
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <widget class="QWidget" name="mainPage">
-       <widget class="QWidget" name="">
-        <property name="geometry">
-         <rect>
-          <x>40</x>
-          <y>10</y>
-          <width>611</width>
-          <height>56</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <widget class="QProgressBar" name="progressBar">
-             <property name="value">
-              <number>0</number>
-             </property>
-             <property name="format">
-              <string>%p%</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="filenameLabel">
-             <property name="text">
-              <string>TextLabel</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <item>
-            <widget class="QPushButton" name="selectFileButton">
-             <property name="text">
-              <string>Select File</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="flashButton">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>Flash</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <property name="topMargin">
+           <number>4</number>
+          </property>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QProgressBar" name="progressBar">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="value">
+               <number>0</number>
+              </property>
+              <property name="format">
+               <string>%p%</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="filenameLabel">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="QPushButton" name="selectFileButton">
+              <property name="text">
+               <string>Select File</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="flashButton">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>Flash</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="optionsPage">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -114,8 +114,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>674</width>
-     <height>21</height>
+     <width>688</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>
@@ -140,11 +140,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>344</x>
-     <y>204</y>
+     <y>186</y>
     </hint>
     <hint type="destinationlabel">
-     <x>204</x>
-     <y>81</y>
+     <x>184</x>
+     <y>143</y>
     </hint>
    </hints>
   </connection>
@@ -155,12 +155,28 @@
    <slot>readFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>477</x>
-     <y>57</y>
+     <x>667</x>
+     <y>95</y>
     </hint>
     <hint type="destinationlabel">
      <x>344</x>
-     <y>204</y>
+     <y>186</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>flashButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>flashData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>606</x>
+     <y>122</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>679</x>
+     <y>158</y>
     </hint>
    </hints>
   </connection>
@@ -169,5 +185,6 @@
   <signal>filenameChanged(QString)</signal>
   <slot>readFile()</slot>
   <slot>populateBaudrates()</slot>
+  <slot>flashData()</slot>
  </slots>
 </ui>

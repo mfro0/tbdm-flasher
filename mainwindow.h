@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class FlashFile;
@@ -20,6 +20,7 @@ signals:
 
 public slots:
     void readFile(void);
+    void flashFile(void);
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -38,10 +39,10 @@ public:
     ~FlashFile(void);
 
     int read(QString);
-    int convertSRecords(QString &s);
-
+    bool convertSRecords(QString &s);
     bool checkChecksum(QString &s, uint32_t address, uint8_t byte_count, QByteArray &data);
-
+    int fileSize() { return binary->size(); }
+    QByteArray *data() { return binary; }
 private:
     QByteArray *binary;
 };
