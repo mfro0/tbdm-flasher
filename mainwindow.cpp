@@ -57,14 +57,16 @@ void MainWindow::flashFile(void)
 
     if (data != NULL)
     {
+        int sz = 0;
         for (int i = 0; i < data->length(); i += blockSize)
         {
             QByteArray block = data->mid(i, blockSize);
 
             qDebug() << "flashing block at offset " << i << "length = " << block.size() << endl;
             flashBlock(&block);
-            qDebug() << "set progress bar to " << data->size() << endl;
-            ui->progressBar->setValue(data->size());
+            sz += block.size();
+            qDebug() << "set progress bar to " << sz << endl;
+            ui->progressBar->setValue(sz);
         }
     }
 }
