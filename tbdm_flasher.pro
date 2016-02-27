@@ -13,9 +13,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-	mainwindow.cpp
+	mainwindow.cpp \
+    bdmdevice.cpp \
+    bdmcommand.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    bdmdevice.h \
+    bdmcommand.h
 
 FORMS    += mainwindow.ui
 

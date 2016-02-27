@@ -50,21 +50,27 @@ void MainWindow::readFile(void)
 void MainWindow::flashFile(void)
 {
     const int blockSize = 4096;
+    QByteArray *data = f->data();
 
-    qDebug() << "flashFile()" << endl;
-    if (f->data() != NULL)
+    ui->progressBar->setMinimum(0);
+    ui->progressBar->setMaximum(data->size());
+
+    if (data != NULL)
     {
-        for (int i = 0; i < f->data()->length(); i += blockSize)
+        for (int i = 0; i < data->length(); i += blockSize)
         {
-            QByteArray block = f->data()->mid(i, blockSize);
+            QByteArray block = data->mid(i, blockSize);
 
-            for (int j = 0; j < blockSize; j++)
-            {
-                qDebug() << QString("%1").arg((int) block.at(i)) << endl;
-            }
-
+            qDebug() << "flashing block at offset " << i << "length = " << block.size() << endl;
+            flashBlock(&block);
+            qDebug() << "set progress bar to " << data->size() << endl;
+            ui->progressBar->setValue(data->size());
         }
     }
+}
+
+void MainWindow::flashBlock(QByteArray *block)
+{
 }
 
 FlashFile::FlashFile(void)

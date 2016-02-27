@@ -18,14 +18,16 @@ class MainWindow : public QMainWindow
 signals:
     void filenameChanged(QString);
 
-public slots:
+private slots:
     void readFile(void);
     void flashFile(void);
 
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
 private:
+    void flashBlock(QByteArray *block);
     Ui::MainWindow *ui;
     FlashFile *f;
 };

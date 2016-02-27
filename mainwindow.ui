@@ -17,6 +17,9 @@
    <layout class="QHBoxLayout" name="horizontalLayout_4">
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
       <widget class="QWidget" name="mainPage">
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
@@ -30,6 +33,9 @@
              <widget class="QProgressBar" name="progressBar">
               <property name="enabled">
                <bool>true</bool>
+              </property>
+              <property name="maximum">
+               <number>106</number>
               </property>
               <property name="value">
                <number>0</number>
@@ -59,9 +65,6 @@
             </item>
             <item>
              <widget class="QPushButton" name="flashButton">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
               <property name="text">
                <string>Flash</string>
               </property>
@@ -168,15 +171,15 @@
    <sender>flashButton</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>flashData()</slot>
+   <slot>flashFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>606</x>
-     <y>122</y>
+     <x>615</x>
+     <y>121</y>
     </hint>
     <hint type="destinationlabel">
-     <x>679</x>
-     <y>158</y>
+     <x>343</x>
+     <y>93</y>
     </hint>
    </hints>
   </connection>
@@ -185,6 +188,6 @@
   <signal>filenameChanged(QString)</signal>
   <slot>readFile()</slot>
   <slot>populateBaudrates()</slot>
-  <slot>flashData()</slot>
+  <slot>flashFile()</slot>
  </slots>
 </ui>
