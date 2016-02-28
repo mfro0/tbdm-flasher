@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "flasherwindow.h"
 #include "ui_mainwindow.h"
 #include <QtWidgets>
 #include <qfiledialog.h>
@@ -6,7 +6,7 @@
 #include <QtDebug>
 
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+FlasherWindow::FlasherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     f = new FlashFile();
 }
 
-MainWindow::~MainWindow()
+FlasherWindow::~FlasherWindow()
 {
     delete ui;
     delete f;
@@ -28,7 +28,7 @@ MainWindow::~MainWindow()
 
 
 
-void MainWindow::readFile(void)
+void FlasherWindow::readFile(void)
 {
     QString s19Filename = QFileDialog::getOpenFileName(this,
                                                        tr("select .s19 file to flash"),
@@ -47,7 +47,7 @@ void MainWindow::readFile(void)
     ui->flashButton->setEnabled(true);
 }
 
-void MainWindow::flashFile(void)
+void FlasherWindow::flashFile(void)
 {
     const int blockSize = 4096;
     QByteArray *data = f->data();
@@ -71,7 +71,7 @@ void MainWindow::flashFile(void)
     }
 }
 
-void MainWindow::flashBlock(QByteArray *block)
+void FlasherWindow::flashBlock(QByteArray *block)
 {
 }
 
@@ -108,16 +108,6 @@ int FlashFile::read(QString s19Filename)
     qDebug() << binary->length() << "bytes read." << endl;
 
     return 0;
-}
-
-uint16_t byteSwap(uint16_t w)
-{
-    return ((w & 0xff) << 8) | ((w & 0xff00) >> 8);
-}
-
-uint32_t byteSwap(uint32_t l)
-{
-    return byteSwap((uint16_t)((l >> 16) & 0xffff)) | byteSwap((uint16_t)((l << 16) & 0xffff0000));
 }
 
 bool FlashFile::checkChecksum(QString &s, uint32_t address, uint8_t byte_count, QByteArray &data)

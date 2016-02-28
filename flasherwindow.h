@@ -11,7 +11,7 @@ namespace Ui {
 
 class FlashFile;
 
-class MainWindow : public QMainWindow
+class FlasherWindow : public QMainWindow
 {
     Q_OBJECT
 
@@ -23,8 +23,8 @@ private slots:
     void flashFile(void);
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit FlasherWindow(QWidget *parent = 0);
+    ~FlasherWindow();
 
 private:
     void flashBlock(QByteArray *block);

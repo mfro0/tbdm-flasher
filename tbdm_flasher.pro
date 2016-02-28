@@ -13,17 +13,19 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-	mainwindow.cpp \
     bdmdevice.cpp \
     bdmcommand.cpp \
-    teensybdmdevice.cpp
+    teensybdmdevice.cpp \
+    flasherwindow.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += \
     bdmdevice.h \
     bdmcommand.h \
-    teensybdmdevice.h
+    teensybdmdevice.h \
+    flasherwindow.h
 
-FORMS    += mainwindow.ui
+FORMS    += \
+    flasherwindow.ui
 
 LIBS += -lusb-1.0
 
