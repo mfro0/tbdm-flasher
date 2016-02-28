@@ -29,8 +29,7 @@ FORMS    += \
 
 LIBS += -lusb-1.0
 
-DISTFILES += \
-    firebee.png
+DISTFILES +=
 
 RESOURCES += \
     tbdm_resource.qrc
