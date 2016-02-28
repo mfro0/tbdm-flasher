@@ -15,8 +15,8 @@ public:
     virtual void close() = 0;
 
     // BDM commands
-    virtual void getVersion(void) = 0;
-    virtual void getLastStatus(void) = 0;
+    virtual void getVersion(void);
+    virtual void getLastStatus(void);
 
     virtual void reset(void) = 0;
     virtual quint8 getStatus(void) = 0;
@@ -52,7 +52,7 @@ public:
     virtual void writeDbgReg(int regnum, quint32 value) = 0;
 
 private:
-    virtual void sendCommand(BDMCommand *command) = 0;
+    virtual void sendCommand(BDMCommand &command) = 0;
     virtual quint32 receiveResult(void) = 0;
 
 };

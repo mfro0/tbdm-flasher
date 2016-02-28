@@ -2,8 +2,6 @@
 #define BDMCOMMAND_H
 
 
-class QByteArray;
-
 enum BDMCommandCode
 {
     GET_VERSION,
@@ -34,6 +32,9 @@ enum BDMCommandCode
     READ_DBGREG,
     WRITE_DBGREG
 };
+
+class QByteArray;
+
 
 class BDMCommand
 {
