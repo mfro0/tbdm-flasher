@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 
-#include <stdint.h>
+#include "bdmdevice.h"
 
 namespace Ui {
     class MainWindow;
@@ -30,6 +30,7 @@ private:
     void flashBlock(QByteArray *block);
     Ui::MainWindow *ui;
     FlashFile *f;
+    BDMDevice *dev;
 };
 
 class FlashFile : public QObject

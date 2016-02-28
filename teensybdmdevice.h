@@ -16,41 +16,41 @@ public:
     virtual void getLastStatus(void);
 
     virtual void reset(void);
-    virtual uint32_t getStatus(void) = 0;
+    virtual quint8 getStatus(void) = 0;
     virtual void halt(void) = 0;
     virtual void go(void) = 0;
     virtual void step(void) = 0;
     virtual void resync(void) = 0;
     virtual void assertTA(void) = 0;
 
-    virtual uint8_t read_mem_byte(uint32_t address);
-    virtual uint16_t read_mem_word(uint32_t address);
-    virtual uint32_t read_mem_long(uint32_t address);
+    virtual quint8 read_mem_byte(quint32 address);
+    virtual quint16 read_mem_word(quint32 address);
+    virtual quint32 read_mem_long(quint32 address);
 
-    virtual void read_memblock_byte(uint32_t address, QByteArray &arr);
-    virtual void read_memblock_word(uint32_t address, QByteArray &arr);
-    virtual void read_memblock_long(uint32_t address, QByteArray &arr);
+    virtual void read_memblock_byte(quint32 address, QByteArray &arr);
+    virtual void read_memblock_word(quint32 address, QByteArray &arr);
+    virtual void read_memblock_long(quint32 address, QByteArray &arr);
 
-    virtual void write_mem_byte(uint32_t address, uint8_t byte);
-    virtual void write_mem_word(uint32_t address, uint16_t word);
-    virtual void write_mem_long(uint32_t address, uint32_t longw);
+    virtual void write_mem_byte(quint32 address, quint8 byte);
+    virtual void write_mem_word(quint32 address, quint16 word);
+    virtual void write_mem_long(quint32 address, quint32 longw);
 
-    virtual void write_memblock_byte(uint32_t address, QByteArray &arr);
-    virtual void write_memblock_word(uint32_t address, QByteArray &arr);
-    virtual void write_memblock_long(uint32_t address, QByteArray &arr);
+    virtual void write_memblock_byte(quint32 address, QByteArray &arr);
+    virtual void write_memblock_word(quint32 address, QByteArray &arr);
+    virtual void write_memblock_long(quint32 address, QByteArray &arr);
 
-    virtual uint32_t read_reg(int regNum);
-    virtual void write_reg(int regnum, uint32_t value);
+    virtual quint32 read_reg(int regNum);
+    virtual void write_reg(int regnum, quint32 value);
 
-    virtual uint32_t read_creg(int regNum);
-    virtual void write_creg(int regnum, uint32_t value);
+    virtual quint32 read_creg(int regNum);
+    virtual void write_creg(int regnum, quint32 value);
 
-    virtual uint32_t read_dbgreg(int regnum);
-    virtual void write_dbgreg(int regnum, uint32_t value);
+    virtual quint32 read_dbgreg(int regnum);
+    virtual void write_dbgreg(int regnum, quint32 value);
 
 private:
     void send_command(BDMCommand *command);
-    uint32_t receive_result(void);
+    quint32 receive_result(void);
 };
 
 #endif // TEENSYBDMDEVICE_H
