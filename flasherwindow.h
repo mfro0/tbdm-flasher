@@ -5,7 +5,8 @@
 
 #include "bdmdevice.h"
 
-namespace Ui {
+namespace Ui
+{
     class MainWindow;
 }
 
@@ -16,7 +17,6 @@ class FlasherWindow : public QMainWindow
     Q_OBJECT
 
 signals:
-    void filenameChanged(QString);
 
 private slots:
     void readFile(void);
@@ -43,7 +43,7 @@ public:
 
     int read(QString);
     bool convertSRecords(QString &s);
-    bool checkChecksum(QString &s, uint32_t address, uint8_t byte_count, QByteArray &data);
+    bool checkChecksum(QString &s, quint32 address, quint8 byte_count, QByteArray &data);
     int fileSize() { return binary->size(); }
     QByteArray *data() { return binary; }
 private:

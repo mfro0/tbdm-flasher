@@ -1,5 +1,5 @@
 #include "flasherwindow.h"
-#include "ui_mainwindow.h"
+#include "ui_flasherwindow.h"
 #include <QtWidgets>
 #include <qfiledialog.h>
 #include <QSerialPortInfo>
@@ -36,13 +36,13 @@ void FlasherWindow::readFile(void)
                                                        tr("*.s19"));
 
     QFileInfo fi(s19Filename);
-    filenameChanged(fi.fileName() + " (" + fi.created().toString() + ")");
+    ui->statusBar->showMessage(fi.fileName() + " (" + fi.created().toString() + ")");
 
     f->read(s19Filename);
     qDebug() << "file size = " << f->fileSize() << endl;
 
-    filenameChanged(fi.fileName() + ", " + QString("%1").arg(f->fileSize()) + " Bytes, " +
-                    fi.created().toString());
+    ui->statusBar->showMessage(fi.fileName() + ", " + QString("%1").arg(f->fileSize()) +
+                               " Bytes, " + fi.created().toString());
 
     ui->flashButton->setEnabled(true);
 }
@@ -110,12 +110,12 @@ int FlashFile::read(QString s19Filename)
     return 0;
 }
 
-bool FlashFile::checkChecksum(QString &s, uint32_t address, uint8_t byte_count, QByteArray &data)
+bool FlashFile::checkChecksum(QString &s, quint32 address, quint8 byte_count, QByteArray &data)
 {
     uint16_t cs = 0;
     bool ok;
 
-    uint8_t srec_cs = s.midRef(s.length() - 3, 2).toInt(&ok, 16);
+    quint8 srec_cs = s.midRef(s.length() - 3, 2).toInt(&ok, 16);
     if (!ok)
     {
         qDebug() << "ckecksum conversion failed" << endl;
@@ -124,7 +124,7 @@ bool FlashFile::checkChecksum(QString &s, uint32_t address, uint8_t byte_count, 
 
     for (int i = 24; i >= 0; i -= 8)
     {
-        uint8_t byte = (uint8_t) (address >> i) & 0xff;
+        quint8 byte = (quint8) (address >> i) & 0xff;
         cs += byte;
     }
 
