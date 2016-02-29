@@ -10,56 +10,121 @@ BDMDevice::~BDMDevice()
 
 }
 
-void BDMDevice::getVersion(void)
+quint8 BDMDevice::getVersion(void)
 {
+    int ret;
+
     BDMCommand cmd(GET_VERSION);
 
-    sendCommand(cmd);
+    ret = sendCommand(cmd);
+    if (ret)
+        return cmd.getBytes()->at(2);
+
+    return -1;
 }
 
-void BDMDevice::getLastStatus(void)
+int BDMDevice::getLastStatus(void)
 {
-    BDMCommand cmd;
+    int ret;
+    BDMCommand cmd(GET_LAST_STATUS);
 
-    sendCommand(cmd);
+    ret = sendCommand(cmd);
+
+    if (ret)
+        return cmd.getBytes()->at(2);
+
+    return -1;
 }
 
-void BDMDevice::reset(void)
+int BDMDevice::reset(void)
 {
-    BDMCommand cmd;
+    int ret;
+    BDMCommand cmd(RESET);
 
-    sendCommand(cmd);
+    ret = sendCommand(cmd);
+
+    if (ret)
+        return cmd.getBytes()->at(2);
+
+    return -1;
 }
 
-quint8 BDMDevice::getStatus(void)
+int BDMDevice::getStatus(void)
 {
-    quint8 status = 0;
+    int status = 0;
+    BDMCommand cmd(GET_STATUS);
+    int ret;
 
-    return status;
+    ret = sendCommand(cmd);
+    if (ret)
+        return cmd.getBytes()->at(2);
+
+    return -1;
 }
 
-void BDMDevice::halt(void)
+int BDMDevice::halt(void)
 {
+    int ret;
+    BDMCommand cmd(HALT);
 
+    ret = sendCommand(cmd);
+
+    if (ret)
+        return cmd.getBytes()->at(2);
+
+    return -1;
 }
 
-void BDMDevice::go(void)
+int BDMDevice::go(void)
 {
+    int ret;
+    BDMCommand cmd(GO);
+
+    ret = sendCommand(cmd);
+
+    if (ret)
+        return cmd.getBytes()->at(2);
+
+    return -1;
 }
 
-void BDMDevice::step(void)
+int BDMDevice::step(void)
 {
+    int ret;
+    BDMCommand cmd(STEP);
 
+    ret = sendCommand(cmd);
+
+    if (ret)
+        return cmd.getBytes()->at(2);
+
+    return -1;
 }
 
-void BDMDevice::resync(void)
+int BDMDevice::resync(void)
 {
+    int ret;
+    BDMCommand cmd(RESYNC);
 
+    ret = sendCommand(cmd);
+
+    if (ret)
+        return cmd.getBytes()->at(2);
+
+    return -1;
 }
 
-void BDMDevice::assertTA(void)
+int BDMDevice::assertTA(void)
 {
+    int ret;
+    BDMCommand cmd(ASSERT_TA);
 
+    ret = sendCommand(cmd);
+
+    if (ret)
+        return cmd.getBytes()->at(2);
+
+    return -1;
 }
 
 quint8 BDMDevice::readMemByte(quint32 address)

@@ -21,16 +21,16 @@ public:
     virtual void close() = 0;
 
     // BDM commands
-    virtual void getVersion(void);
-    virtual void getLastStatus(void);
+    virtual quint8 getVersion(void);
+    virtual int getLastStatus(void);
 
-    virtual void reset(void) = 0;
-    virtual quint8 getStatus(void) = 0;
-    virtual void halt(void) = 0;
-    virtual void go(void) = 0;
-    virtual void step(void) = 0;
-    virtual void resync(void) = 0;
-    virtual void assertTA(void) = 0;
+    virtual int reset(void) = 0;
+    virtual int getStatus(void) = 0;
+    virtual int halt(void) = 0;
+    virtual int go(void) = 0;
+    virtual int step(void) = 0;
+    virtual int resync(void) = 0;
+    virtual int assertTA(void) = 0;
 
     virtual quint8 readMemByte(quint32 address) = 0;
     virtual quint16 readMemWord(quint32 address) = 0;
@@ -58,8 +58,7 @@ public:
     virtual void writeDbgReg(int regnum, quint32 value) = 0;
 
 private:
-    virtual void sendCommand(BDMCommand &command) = 0;
-    virtual quint32 receiveResult(void) = 0;
+    virtual int sendCommand(BDMCommand &command) = 0;
 
     QHash<QString, QString> deviceParameters;
 
