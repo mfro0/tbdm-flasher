@@ -2,6 +2,7 @@
 #define BDMDEVICE_H
 
 #include <QtGlobal>
+#include <QString>
 #include <QHash>
 
 class QByteArray;
