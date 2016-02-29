@@ -27,7 +27,7 @@ HEADERS  += \
 FORMS    += \
     flasherwindow.ui
 
-LIBS += -lusb-1.0
+# LIBS += -lusb-1.0
 
 DISTFILES +=
 

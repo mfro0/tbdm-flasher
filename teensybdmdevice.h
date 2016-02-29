@@ -3,17 +3,22 @@
 #include "bdmdevice.h"
 
 class BDMCommand;
+class QSerialPort;
 
 class TeensyBDMDevice : public BDMDevice
 {
 public:
     TeensyBDMDevice();
+    ~TeensyBDMDevice();
+
     virtual void open();
     virtual void close();
 
 private:
-    void sendCommand(BDMCommand *command);
-    quint32 receiveResult(void);
+    virtual void sendCommand(BDMCommand *command);
+    virtual quint32 receiveResult(void);
+
+    QSerialPort *serial;
 };
 
 #endif // TEENSYBDMDEVICE_H

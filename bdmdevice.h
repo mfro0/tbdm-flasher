@@ -2,6 +2,7 @@
 #define BDMDEVICE_H
 
 #include <QtGlobal>
+#include <QHash>
 
 class QByteArray;
 class BDMCommand;
@@ -10,6 +11,10 @@ class BDMDevice
 {
 public:
     BDMDevice();
+    ~BDMDevice();
+
+    virtual void setDeviceParameters(QHash<QString, QString> params) { deviceParameters = params; }
+    virtual QHash<QString, QString> &getDeviceParameters(void) { return deviceParameters; }
 
     virtual void open() = 0;
     virtual void close() = 0;
@@ -54,6 +59,8 @@ public:
 private:
     virtual void sendCommand(BDMCommand &command) = 0;
     virtual quint32 receiveResult(void) = 0;
+
+    QHash<QString, QString> deviceParameters;
 
 };
 

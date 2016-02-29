@@ -1,12 +1,19 @@
 #include "teensybdmdevice.h"
+#include <QSerialPort>
 
 TeensyBDMDevice::TeensyBDMDevice()
 {
+    serial = new QSerialPort();
+}
 
+TeensyBDMDevice::~TeensyBDMDevice()
+{
+    delete serial;
 }
 
 void TeensyBDMDevice::open()
 {
+
 }
 
 void TeensyBDMDevice::close()

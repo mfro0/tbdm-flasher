@@ -5,6 +5,11 @@ BDMDevice::BDMDevice()
 {
 }
 
+BDMDevice::~BDMDevice()
+{
+
+}
+
 void BDMDevice::getVersion(void)
 {
     BDMCommand cmd(GET_VERSION);
