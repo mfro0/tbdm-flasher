@@ -27,7 +27,12 @@ HEADERS  += \
 FORMS    += \
     flasherwindow.ui
 
-# LIBS += -lusb-1.0
+win32 {
+	QMAKE_LFLAGS += -L..\\libusb\\lib
+	INCLUDEPATH += ..\\libusb\\include
+}
+
+LIBS += -lusb-1.0
 
 DISTFILES +=
 

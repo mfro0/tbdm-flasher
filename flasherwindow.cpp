@@ -5,6 +5,7 @@
 #include <QSerialPortInfo>
 #include <QtDebug>
 
+#include "libusb.h"
 
 FlasherWindow::FlasherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -25,8 +26,86 @@ FlasherWindow::~FlasherWindow()
     delete f;
 }
 
+static libusb_device *devices;
+static int usb_devs = 0;
+static int usb_dev_count = 0;
+static libusb_device **usb_libusb_devs;
+
+void bdmcf_usb_init(void) {
+    libusb_init(NULL);         /* init LIBUSB */
+    libusb_set_debug(NULL, 0); /* set debug level to minimum */
+}
+
+/*
+ * find all BDMCF devices attached to the computer
+ */
+void bdmcf_usb_find_devices(unsigned short int product_id) {
+    int i;
+    int count;
+
+    if (usb_devs) return;
+
+    count = libusb_get_device_list(NULL, &usb_libusb_devs);
+    if (count < 0)
+    {
+        fprintf(stderr, "warning: error getting device list");
+        return;
+    }
+
+    /* scan through all busses then devices counting the number found */
+    for (i = 0; i < count; i++) {
+        libusb_device *dev = usb_libusb_devs[i];
+        struct libusb_device_descriptor desc;
+        int r = libusb_get_device_descriptor(dev, &desc);
+        if (r < 0) {
+            fprintf(stderr, "warning: failed to get usb device descriptor");
+        }
+        else
+        {
+            // if ((desc.idVendor == bdmcf_VID) && (desc.idProduct == product_id))
+            {
+                /* found a device */
+                usb_dev_count++;
+            }
+        }
+    }
+
+    usb_devs = calloc (usb_dev_count, sizeof (bdmcf_usb_dev));
+    if (!usb_devs) return;
+
+    usb_dev_count = 0;
+
+    /* scan through all busses and devices adding each one */
+    for (i = 0; i < count; i++) {
+        libusb_device *dev = usb_libusb_devs[i];
+        struct libusb_device_descriptor desc;
+        bdmcf_usb_dev *udev = &usb_devs[usb_dev_count];
+        int r = libusb_get_device_descriptor(dev, &desc);
+        if (r >= 0) {
+            if ((desc.idVendor == bdmcf_VID) && (desc.idProduct == product_id)) {
+                /* found a device */
+                udev->desc = desc;
+                udev->device = dev;
+                udev->bus_number = libusb_get_bus_number(dev);
+                udev->device_address = libusb_get_device_address(dev);
+                snprintf(udev->name, sizeof(udev->name), "%03d-%03d", udev->bus_number, udev->device_address);
+                usb_dev_count++;
+            }
+        }
+    }
+}
 
 
+#define bdmcf_PID   0x1001
+
+unsigned char bdmcf_init(void) {
+    unsigned char i;
+    bdmcf_usb_init();
+    bdmcf_usb_find_devices(bdmcf_PID);	/* look for devices on all USB busses */
+    i = bdmcf_usb_cnt();
+    qDebug() << "TBDML_INIT: Usb initialised, found " << i << " device(s)";
+    return(i);							/* count the devices found and return the number */
+}
 
 void FlasherWindow::readFile(void)
 {

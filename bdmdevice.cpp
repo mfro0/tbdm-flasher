@@ -51,7 +51,6 @@ int BDMDevice::reset(void)
 
 int BDMDevice::getStatus(void)
 {
-    int status = 0;
     BDMCommand cmd(GET_STATUS);
     int ret;
 
