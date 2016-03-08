@@ -32,6 +32,10 @@ win32 {
 	INCLUDEPATH += ..\\libusb\\include
 }
 
+linux {
+	INCLUDEPATH += /usr/include/libusb-1.0
+}
+
 LIBS += -lusb-1.0
 
 DISTFILES +=
