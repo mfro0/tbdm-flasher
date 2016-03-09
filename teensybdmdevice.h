@@ -4,6 +4,7 @@
 
 class BDMCommand;
 class QSerialPort;
+struct libusb_context;
 
 class TeensyBDMDevice : public BDMDevice
 {
@@ -13,12 +14,13 @@ public:
 
     virtual void open();
     virtual void close();
+    void findDevices(quint16 product_id);
 
 private:
-    virtual void sendCommand(BDMCommand *command);
-    virtual quint32 receiveResult(void);
+    libusb_context *ctx;
+    int dev_count;
 
-    QSerialPort *serial;
+    virtual int sendCommand(BDMCommand &command);
 };
 
 #endif // TEENSYBDMDEVICE_H
