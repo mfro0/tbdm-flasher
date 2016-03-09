@@ -4,10 +4,10 @@
 
 #include "libusb.h"
 
-// #define BDMCF_VID   0x0425
-// #define BDMCF_PID   0x1001
-#define BDMCF_VID   0x03eb
-#define BDMCF_PID   0x8a06
+#define BDMCF_VID   0x0425
+#define BDMCF_PID   0x1001
+//#define BDMCF_VID   0x03eb
+//#define BDMCF_PID   0x8a06
 
 
 typedef struct bdmcf_usb_dev_s

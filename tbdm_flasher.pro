@@ -36,6 +36,11 @@ linux {
 	INCLUDEPATH += /usr/include/libusb-1.0
 }
 
+macx-clang {
+	INCLUDEPATH += /usr/local/include/libusb
+	QMAKE_LFLAGS += -L/usr/local/lib
+}
+
 LIBS += -lusb-1.0
 
 DISTFILES +=
