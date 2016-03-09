@@ -96,6 +96,8 @@ void TeensyBDMDevice::findDevices(quint16 product_id)
 
 TeensyBDMDevice::TeensyBDMDevice()
 {
+    dev_count = 0;
+
     libusb_init(&ctx);                  /* init LIBUSB */
     libusb_set_debug(NULL, 0);          /* set debug level to minimum */
 
