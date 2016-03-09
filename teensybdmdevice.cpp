@@ -51,7 +51,7 @@ void TeensyBDMDevice::findDevices(quint16 product_id)
         qDebug() << QString("found USB device vendor=0x%1 product=0x%2").arg(desc.idVendor, 0, 16).arg(desc.idProduct, 0, 16);
         if (r < 0)
         {
-            fprintf(stderr, "warning: failed to get usb device descriptor");
+            qWarning() << "failed to get usb device descriptor";
         }
         else
         {
