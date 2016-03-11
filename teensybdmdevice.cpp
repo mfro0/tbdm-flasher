@@ -43,9 +43,6 @@ typedef struct bdmcf_usb_dev_s
     char name[16];
 } bdmcf_usb_dev;
 
-static bdmcf_usb_dev *usb_devs = 0;
-static libusb_device **usb_libusb_devs;
-
 
 /*
  * find all BDMCF devices attached to the computer
@@ -54,8 +51,9 @@ void TeensyBDMDevice::findDevices(quint16 product_id)
 {
     int i;
     int count;
+    libusb_device **usb_libusb_devs;
+    bdmcf_usb_dev *bdmcf_usbdevs = 0;
 
-    if (usb_devs) return;
 
     count = libusb_get_device_list(NULL, &usb_libusb_devs);
     if (count < 0)
@@ -86,8 +84,8 @@ void TeensyBDMDevice::findDevices(quint16 product_id)
         }
     }
 
-    usb_devs = (bdmcf_usb_dev *) calloc(dev_count, sizeof (bdmcf_usb_dev));
-    if (!usb_devs) return;
+    bdmcf_usbdevs = (bdmcf_usb_dev *) calloc(dev_count, sizeof (bdmcf_usb_dev));
+    if (!bdmcf_usbdevs) return;
 
     dev_count = 0;
 
@@ -96,7 +94,7 @@ void TeensyBDMDevice::findDevices(quint16 product_id)
     {
         libusb_device *dev = usb_libusb_devs[i];
         struct libusb_device_descriptor desc;
-        bdmcf_usb_dev *udev = &usb_devs[dev_count];
+        bdmcf_usb_dev *udev = &bdmcf_usbdevs[dev_count];
         int r = libusb_get_device_descriptor(dev, &desc);
 
         if (r >= 0)
@@ -113,6 +111,7 @@ void TeensyBDMDevice::findDevices(quint16 product_id)
             }
         }
     }
+    libusb_free_device_list(usb_libusb_devs, 1);
 }
 
 
@@ -122,7 +121,8 @@ TeensyBDMDevice::TeensyBDMDevice()
     dev_count = 0;
 
     libusb_init(&ctx);                  /* init LIBUSB */
-    libusb_set_debug(NULL, 0);          /* set debug level to minimum */
+    libusb_set_debug(ctx, 3); //set verbosity level to 3, as suggested in the documentation
+    // libusb_set_debug(NULL, 0);          /* set debug level to minimum */
 
     findDevices(BDMCF_PID);  /* look for devices on all USB busses */
     qDebug() << "bdmcf_init: USB initialised, found " << dev_count << " device(s)";
@@ -136,6 +136,7 @@ TeensyBDMDevice::~TeensyBDMDevice()
 
 void TeensyBDMDevice::open()
 {
+    // libusb_open(dev, &device_handle);
 }
 
 void TeensyBDMDevice::close()
