@@ -25,7 +25,6 @@
 #include "ui_flasherwindow.h"
 #include <QtWidgets>
 #include <qfiledialog.h>
-#include <QSerialPortInfo>
 #include <QtDebug>
 
 #include "teensybdmdevice.h"
@@ -33,13 +32,6 @@
 FlasherWindow::FlasherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    QList<QSerialPortInfo> ports = QSerialPortInfo::availablePorts();
-
-    for (int i = 0; i < ports.size(); i++)
-    {
-        ui->portName->addItem(ports.at(i).portName());
-    }
 
     f = new FlashFile();
     dev = new TeensyBDMDevice();
@@ -63,7 +55,7 @@ void FlasherWindow::readFile(void)
     ui->statusBar->showMessage(fi.fileName() + " (" + fi.created().toString() + ")");
 
     f->read(s19Filename);
-    qDebug() << "file size = " << f->fileSize() << endl;
+    qDebug() << "file size = " << f->fileSize() ;
 
     ui->statusBar->showMessage(fi.fileName() + ", " + QString("%1").arg(f->fileSize()) +
                                " Bytes, " + fi.created().toString());
@@ -86,10 +78,10 @@ void FlasherWindow::flashFile(void)
         {
             QByteArray block = data->mid(i, blockSize);
 
-            qDebug() << "flashing block at offset " << i << "length = " << block.size() << endl;
+            qDebug() << "flashing block at offset " << i << "length = " << block.size() ;
             flashBlock(&block);
             sz += block.size();
-            qDebug() << "set progress bar to " << sz << endl;
+            qDebug() << "set progress bar to " << sz ;
             ui->progressBar->setValue(sz);
         }
     }
@@ -97,6 +89,7 @@ void FlasherWindow::flashFile(void)
 
 void FlasherWindow::flashBlock(QByteArray *block)
 {
+    qDebug() << "FlasherWindow::flashBlock()";
 }
 
 FlashFile::FlashFile(void)
@@ -129,7 +122,7 @@ int FlashFile::read(QString s19Filename)
     }
     f.close();
 
-    qDebug() << binary->length() << "bytes read." << endl;
+    qDebug() << binary->length() << "bytes read." ;
 
     return 0;
 }
@@ -142,7 +135,7 @@ bool FlashFile::checkChecksum(QString &s, quint32 address, quint8 byte_count, QB
     quint8 srec_cs = s.midRef(s.length() - 3, 2).toInt(&ok, 16);
     if (!ok)
     {
-        qDebug() << "ckecksum conversion failed" << endl;
+        qDebug() << "ckecksum conversion failed" ;
         return false;
     }
 
@@ -169,7 +162,7 @@ bool FlashFile::checkChecksum(QString &s, quint32 address, quint8 byte_count, QB
                 QString("%1").arg(cs, 0, 16) <<
                 "data.size() = " << data.size() <<
                 endl;
-    qDebug() << QString("%1").arg(data.size() + 5, 0, 16) << QString("%1").arg((long) address, 0, 16) << data.toHex() << endl;
+    qDebug() << QString("%1").arg(data.size() + 5, 0, 16) << QString("%1").arg((long) address, 0, 16) << data.toHex() ;
     return false;
 }
 
@@ -182,29 +175,29 @@ bool FlashFile::convertSRecords(QString &s)
 
     if (s.leftRef(1).at(0) != 'S')
     {
-        qDebug() << "illegal S-Record found" << endl;
+        qDebug() << "illegal S-Record found" ;
         return -1;
     }
 
     switch (s.midRef(1, 1).at(0).digitValue())
     {
         case 0:
-            qDebug() << "S0 header found." << endl;
+            qDebug() << "S0 header found." ;
             break;
 
         case 1:
-            qDebug() << "S1 record found" << endl;
+            qDebug() << "S1 record found" ;
             break;
 
         case 2:
-            qDebug() << "S2 record found" << endl;
+            qDebug() << "S2 record found" ;
             break;
 
         case 3:
             address = s.midRef(4, 8).toULong(&good, 16);
             if (!good)
             {
-                qDebug() << "address conversion failed!" << endl;
+                qDebug() << "address conversion failed!" ;
                 return false;
             }
 
@@ -221,7 +214,7 @@ bool FlashFile::convertSRecords(QString &s)
                 }
                 else
                 {
-                    qDebug() << "data conversion failed!" << endl;
+                    qDebug() << "data conversion failed!" ;
                     return false;
                 }
             }
@@ -253,7 +246,7 @@ bool FlashFile::convertSRecords(QString &s)
             break;
 
         default:
-            qDebug() << "illegal S-Record " << s << endl;
+            qDebug() << "illegal S-Record " << s ;
     }
 
     return true;

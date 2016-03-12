@@ -107,10 +107,56 @@ void TeensyBDMDevice::findDevices(quint16 product_id)
                 udev->bus_number = libusb_get_bus_number(dev);
                 udev->device_address = libusb_get_device_address(dev);
                 snprintf(udev->name, sizeof(udev->name), "%03d-%03d", udev->bus_number, udev->device_address);
+                qDebug() << "device found at bus " << udev->bus_number << "device address" << udev->device_address;
                 dev_count++;
             }
         }
     }
+    libusb_device_handle *dev_handle = libusb_open_device_with_vid_pid(ctx, BDMCF_VID, BDMCF_PID);
+    if (dev_handle != NULL)
+    {
+        int config;
+        int res;
+
+        res = libusb_get_configuration(dev_handle, &config);
+        if (res == 0)
+        {
+            qDebug() << "active configuration =" << config;
+        }
+
+        res = libusb_kernel_driver_active(dev_handle, 0);
+        if (res == 0)
+        {
+            qDebug() << "no kernel driver active";
+        }
+
+        res = libusb_get_configuration(dev_handle, &config);
+        if (res == 0)
+        {
+            qDebug() << "configuration" << config << "is active";
+        }
+
+        res = libusb_set_configuration(dev_handle, 1);
+        if (res == 0)
+        {
+            qDebug() << "configuration 1 set";
+        }
+
+    }
+    if (dev_handle != NULL)
+    {
+        quint8 data[255] = { 0 };
+        int transferred;
+        int res;
+
+        res = libusb_claim_interface(dev_handle, 0);
+        qDebug() << "libusb_claim_interface res=" << res;
+
+        // res = libusb_control_transfer(dev_handle, )
+        res = libusb_bulk_transfer(dev_handle, 2 | LIBUSB_ENDPOINT_OUT, data, sizeof(data), &transferred, 1000);
+        qDebug() << "libusb_bulk_transfer res=" << res;
+    }
+
     libusb_free_device_list(usb_libusb_devs, 1);
 }
 
