@@ -119,42 +119,51 @@ void TeensyBDMDevice::findDevices(quint16 product_id)
         int res;
 
         res = libusb_get_configuration(dev_handle, &config);
+        qDebug() << "libusb_get_configuration() returned " << res << "(" << libusb_error_name(res) << ")";
         if (res == 0)
         {
             qDebug() << "active configuration =" << config;
         }
 
         res = libusb_kernel_driver_active(dev_handle, 0);
+        qDebug() << "libusb_kernel_driver_active() returned " << res << "(" << libusb_error_name(res) << ")";
         if (res == 0)
         {
             qDebug() << "no kernel driver active";
         }
 
         res = libusb_get_configuration(dev_handle, &config);
+        qDebug() << "libusb_get_configuration() returned " << res << "(" << libusb_error_name(res) << ")";
         if (res == 0)
         {
             qDebug() << "configuration" << config << "is active";
         }
 
         res = libusb_set_configuration(dev_handle, 1);
+        qDebug() << "libusb_set_configuration() returned" << res << "(" << libusb_error_name(res) << ")";
         if (res == 0)
         {
             qDebug() << "configuration 1 set";
         }
 
     }
+
     if (dev_handle != NULL)
     {
-        quint8 data[255] = { 0 };
+        quint8 data[32] = { 0 };
         int transferred;
         int res;
 
         res = libusb_claim_interface(dev_handle, 0);
-        qDebug() << "libusb_claim_interface res=" << res;
+        qDebug() << "libusb_claim_interface res=" << libusb_error_name(res);
 
         // res = libusb_control_transfer(dev_handle, )
-        res = libusb_bulk_transfer(dev_handle, 1 | LIBUSB_ENDPOINT_OUT, data, sizeof(data), &transferred, 1000);
-        qDebug() << "libusb_bulk_transfer res=" << res;
+        res = libusb_bulk_transfer(dev_handle, 1 | LIBUSB_ENDPOINT_IN, data, sizeof(data), &transferred, 1000);
+        qDebug() << "libusb_bulk_transfer IN res=" << libusb_error_name(res);
+
+        res = libusb_bulk_transfer(dev_handle, 2 | LIBUSB_ENDPOINT_OUT, data, sizeof(data), &transferred, 1000);
+        qDebug() << "libusb_bulk_transfer OUT res=" << libusb_error_name(res);
+
     }
 
     libusb_free_device_list(usb_libusb_devs, 1);
