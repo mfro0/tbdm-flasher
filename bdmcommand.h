@@ -67,7 +67,7 @@ public:
     ~BDMCommand();
 
     void setCommand(BDMCommandCode cmd) { this->cmd = cmd; }
-    const QByteArray *getBytes(void) { return data; }
+    QByteArray *getBytes(void) { return data; }
     void setBytes(QByteArray *data) { this->data = data; }
 
 private:

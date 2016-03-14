@@ -228,6 +228,8 @@ int TeensyBDMDevice::sendCommand(BDMCommand &command)
     int size;
     uint8_t *data;
 
+    command.getBytes()->fill('A');
+    // hexdump((uint8_t *) command.getBytes()->data(), command.getBytes()->length());
     data = (uint8_t *) command.getBytes()->data();
     size = command.getBytes()->length();
 
