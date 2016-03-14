@@ -38,6 +38,6 @@ BDMCommand::BDMCommand(BDMCommandCode cmd)
 
 BDMCommand::~BDMCommand()
 {
-    delete data;
+    // delete data;
 }
 

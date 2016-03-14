@@ -28,6 +28,7 @@
 class BDMCommand;
 class QSerialPort;
 struct libusb_context;
+struct libusb_device_handle;
 
 class TeensyBDMDevice : public BDMDevice
 {
@@ -41,6 +42,7 @@ public:
 
 private:
     libusb_context *ctx;
+    libusb_device_handle *dev_handle;
     int dev_count;
 
     virtual int sendCommand(BDMCommand &command);

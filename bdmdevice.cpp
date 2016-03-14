@@ -194,8 +194,9 @@ void BDMDevice::readMemblockWord(quint32 address, QByteArray &arr)
 
 void BDMDevice::readMemblockLong(quint32 address, QByteArray &arr)
 {
-    BDMCommand cmd;
+    BDMCommand cmd(READ_MEMBLOCK_LONG);
 
+    cmd.setBytes(&arr);
     sendCommand(cmd);
 }
 

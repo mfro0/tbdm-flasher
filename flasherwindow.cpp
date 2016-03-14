@@ -22,6 +22,7 @@
  */
 
 #include "flasherwindow.h"
+#include "bdmcommand.h"
 #include "ui_flasherwindow.h"
 #include <QtWidgets>
 #include <qfiledialog.h>
@@ -35,6 +36,12 @@ FlasherWindow::FlasherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::
 
     f = new FlashFile();
     dev = new TeensyBDMDevice();
+
+    QByteArray ba(1000, '\0');
+    dev->open();
+    dev->readMemblockLong(0, ba);
+    dev->close();
+
 }
 
 FlasherWindow::~FlasherWindow()

@@ -23,15 +23,14 @@
 
 #include <QDebug>
 
+#include "bdmcommand.h"
 #include "teensybdmdevice.h"
 
 #include "libusb.h"
+#include <algorithm>            // for min()
 
 #define BDMCF_VID   0x0425
 #define BDMCF_PID   0x1001
-//#define BDMCF_VID   0x03eb
-//#define BDMCF_PID   0x8a06
-
 
 typedef struct bdmcf_usb_dev_s
 {
@@ -112,7 +111,32 @@ void TeensyBDMDevice::findDevices(quint16 product_id)
             }
         }
     }
-    libusb_device_handle *dev_handle = libusb_open_device_with_vid_pid(ctx, BDMCF_VID, BDMCF_PID);
+
+}
+
+
+
+TeensyBDMDevice::TeensyBDMDevice()
+{
+    dev_count = 0;
+
+    libusb_init(&ctx);                  /* init LIBUSB */
+    libusb_set_debug(ctx, 3); //set verbosity level to 3, as suggested in the documentation
+    // libusb_set_debug(NULL, 0);          /* set debug level to minimum */
+
+    findDevices(BDMCF_PID);  /* look for devices on all USB busses */
+    qDebug() << "TeensyBDMDevice::TeensyBDMDevice(): USB initialised, found " << dev_count << " device(s)";
+}
+
+TeensyBDMDevice::~TeensyBDMDevice()
+{
+
+    libusb_exit(ctx);
+}
+
+void TeensyBDMDevice::open()
+{
+    dev_handle = libusb_open_device_with_vid_pid(ctx, BDMCF_VID, BDMCF_PID);
     if (dev_handle != NULL)
     {
         int config;
@@ -146,62 +170,42 @@ void TeensyBDMDevice::findDevices(quint16 product_id)
             qDebug() << "configuration 1 set";
         }
 
-    }
-
-    if (dev_handle != NULL)
-    {
-        quint8 data[32] = { 0 };
-        int transferred;
-        int res;
-
         res = libusb_claim_interface(dev_handle, 0);
         qDebug() << "libusb_claim_interface res=" << libusb_error_name(res);
-
-        // res = libusb_control_transfer(dev_handle, )
-        res = libusb_bulk_transfer(dev_handle, 1 | LIBUSB_ENDPOINT_IN, data, sizeof(data), &transferred, 1000);
-        qDebug() << "libusb_bulk_transfer IN res=" << libusb_error_name(res);
-
-        res = libusb_bulk_transfer(dev_handle, 2 | LIBUSB_ENDPOINT_OUT, data, sizeof(data), &transferred, 1000);
-        qDebug() << "libusb_bulk_transfer OUT res=" << libusb_error_name(res);
-
     }
-
-    libusb_free_device_list(usb_libusb_devs, 1);
-}
-
-
-
-TeensyBDMDevice::TeensyBDMDevice()
-{
-    dev_count = 0;
-
-    libusb_init(&ctx);                  /* init LIBUSB */
-    libusb_set_debug(ctx, 3); //set verbosity level to 3, as suggested in the documentation
-    // libusb_set_debug(NULL, 0);          /* set debug level to minimum */
-
-    findDevices(BDMCF_PID);  /* look for devices on all USB busses */
-    qDebug() << "bdmcf_init: USB initialised, found " << dev_count << " device(s)";
-}
-
-TeensyBDMDevice::~TeensyBDMDevice()
-{
-
-    libusb_exit(ctx);
-}
-
-void TeensyBDMDevice::open()
-{
-    // libusb_open(dev, &device_handle);
 }
 
 void TeensyBDMDevice::close()
 {
+    libusb_close(dev_handle);
+    dev_handle = 0;
 }
+
+#define BULK_MAX_SIZE 64
 
 int TeensyBDMDevice::sendCommand(BDMCommand &command)
 {
-    int ret = 0;
+    int res = 0;
+    int transferred;
+    int size;
+    uint8_t *data;
 
-    return ret;
+    data = (uint8_t *) command.getBytes()->data();
+    size = command.getBytes()->length();
+
+    do
+    {
+        res = libusb_bulk_transfer(dev_handle, 2 | LIBUSB_ENDPOINT_OUT, data, std::min(BULK_MAX_SIZE, size), &transferred, 1000);
+        qDebug() << "libusb_bulk_transfer OUT res=" << libusb_error_name(res);
+
+        data += transferred;
+        size -= transferred;
+    } while (size > 0);
+
+    res = libusb_bulk_transfer(dev_handle, 1 | LIBUSB_ENDPOINT_IN, data, sizeof(data), &transferred, 1000);
+    qDebug() << "libusb_bulk_transfer IN res=" << libusb_error_name(res);
+
+
+    return res;
 }
 
