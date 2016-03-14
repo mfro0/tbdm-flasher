@@ -153,7 +153,7 @@ void TeensyBDMDevice::findDevices(quint16 product_id)
         qDebug() << "libusb_claim_interface res=" << res;
 
         // res = libusb_control_transfer(dev_handle, )
-        res = libusb_bulk_transfer(dev_handle, 2 | LIBUSB_ENDPOINT_OUT, data, sizeof(data), &transferred, 1000);
+        res = libusb_bulk_transfer(dev_handle, 1 | LIBUSB_ENDPOINT_OUT, data, sizeof(data), &transferred, 1000);
         qDebug() << "libusb_bulk_transfer res=" << res;
     }
 
