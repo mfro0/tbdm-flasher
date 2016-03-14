@@ -181,6 +181,44 @@ void TeensyBDMDevice::close()
     dev_handle = 0;
 }
 
+void hexdump(uint8_t buffer[], int size)
+{
+   int i;
+   int line = 0;
+   uint8_t *bp = buffer;
+
+   while (bp < buffer + size) {
+      uint8_t *lbp = bp;
+
+      printf("%08x  ", bp - buffer);
+
+      for (i = 0; i < 16; i++) {
+	 if (bp + i > buffer + size) {
+	    break;
+	 }
+	 printf("%02x ", (uint8_t) *lbp++);
+      }
+
+      lbp = bp;
+      for (i = 0; i < 16; i++) {
+	 int8_t c = *lbp++;
+
+	 if (bp + i > buffer + size) {
+	    break;
+	 }
+	 if (c > ' ' && c < '~') {
+	    printf("%c", c);
+	 } else {
+	    printf(".");
+	 }
+      }
+      printf("\n");
+
+      bp += 16;
+      line += 16;
+   }
+}
+
 #define BULK_MAX_SIZE 64
 
 int TeensyBDMDevice::sendCommand(BDMCommand &command)
@@ -193,18 +231,21 @@ int TeensyBDMDevice::sendCommand(BDMCommand &command)
     data = (uint8_t *) command.getBytes()->data();
     size = command.getBytes()->length();
 
+    quint8 receiveBuffer[1024];
+
     do
     {
         res = libusb_bulk_transfer(dev_handle, 2 | LIBUSB_ENDPOINT_OUT, data, std::min(BULK_MAX_SIZE, size), &transferred, 1000);
-        qDebug() << "libusb_bulk_transfer OUT res=" << libusb_error_name(res);
+	qDebug() << "libusb_bulk_transfer OUT res=" << libusb_error_name(res) << "(" << transferred << "Bytes)";
 
         data += transferred;
         size -= transferred;
     } while (size > 0);
 
-    res = libusb_bulk_transfer(dev_handle, 1 | LIBUSB_ENDPOINT_IN, data, sizeof(data), &transferred, 1000);
-    qDebug() << "libusb_bulk_transfer IN res=" << libusb_error_name(res);
+    res = libusb_bulk_transfer(dev_handle, 1 | LIBUSB_ENDPOINT_IN, receiveBuffer, sizeof(receiveBuffer), &transferred, 1000);
+    qDebug() << "libusb_bulk_transfer IN res=" << libusb_error_name(res) << "(" << transferred << "Bytes)";
 
+    hexdump(receiveBuffer, transferred);
 
     return res;
 }
