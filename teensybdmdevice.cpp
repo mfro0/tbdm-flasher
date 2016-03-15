@@ -183,40 +183,48 @@ void TeensyBDMDevice::close()
 
 void hexdump(uint8_t buffer[], int size)
 {
-   int i;
-   int line = 0;
-   uint8_t *bp = buffer;
+    int i;
+    int line = 0;
+    uint8_t *bp = buffer;
+    QDebug deb = qDebug().nospace();
 
-   while (bp < buffer + size) {
-      uint8_t *lbp = bp;
+    qDebug() << "hexdump";
 
-      printf("%08x  ", bp - buffer);
+    while (bp < buffer + size) {
+        uint8_t *lbp = bp;
 
-      for (i = 0; i < 16; i++) {
-	 if (bp + i > buffer + size) {
-	    break;
-	 }
-	 printf("%02x ", (uint8_t) *lbp++);
-      }
+        // printf("%08x  ", bp - buffer);
+        deb << QString().arg((ulong) buffer, 8, 16);
 
-      lbp = bp;
-      for (i = 0; i < 16; i++) {
-	 int8_t c = *lbp++;
+        for (i = 0; i < 16; i++) {
+            if (bp + i > buffer + size) {
+                break;
+            }
+            // printf("%02x ", (uint8_t) *lbp++);
+            deb << QString().arg((quint8) *lbp++, 2, 16) << " ";
+        }
 
-	 if (bp + i > buffer + size) {
-	    break;
-	 }
-	 if (c > ' ' && c < '~') {
-	    printf("%c", c);
-	 } else {
-	    printf(".");
-	 }
-      }
-      printf("\n");
+        lbp = bp;
+        for (i = 0; i < 16; i++) {
+            int8_t c = *lbp++;
 
-      bp += 16;
-      line += 16;
-   }
+            if (bp + i > buffer + size) {
+                break;
+            }
+            if (c > ' ' && c < '~') {
+                // printf("%c", c);
+                deb << QString(c);
+            } else {
+                // printf(".");
+                deb << ".";
+            }
+        }
+        // printf("\n");
+        deb << "\r\n";
+
+        bp += 16;
+        line += 16;
+    }
 }
 
 #define BULK_MAX_SIZE 64
