@@ -37,7 +37,8 @@ FlasherWindow::FlasherWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::
     f = new FlashFile();
     dev = new TeensyBDMDevice();
 
-    QByteArray ba(1000, '\0');
+    QByteArray ba("a message to the Teensy from ba                                        "
+                  "end of message end of message end of message end of message");
     dev->open();
     dev->readMemblockLong(0, ba);
     dev->close();

@@ -27,11 +27,12 @@
 
 BDMCommand::BDMCommand()
 {
+    data = new QByteArray("message to Teensy from default constructor");
 }
 
 BDMCommand::BDMCommand(BDMCommandCode cmd)
 {
-    data = new QByteArray();
+    data = new QByteArray("    a message to the Teensy");
     data->append((quint8) (cmd & 0xff));
     data->append((quint8) (cmd >> 8));
 }

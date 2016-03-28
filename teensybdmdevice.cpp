@@ -122,7 +122,7 @@ TeensyBDMDevice::TeensyBDMDevice()
 
     libusb_init(&ctx);                  /* init LIBUSB */
     libusb_set_debug(ctx, 3); //set verbosity level to 3, as suggested in the documentation
-    // libusb_set_debug(NULL, 0);          /* set debug level to minimum */
+    // libusb_set_debug(ctx, 0);          /* set debug level to minimum */
 
     findDevices(BDMCF_PID);  /* look for devices on all USB busses */
     qDebug() << "TeensyBDMDevice::TeensyBDMDevice(): USB initialised, found " << dev_count << " device(s)";
@@ -189,19 +189,20 @@ void hexdump(uint8_t buffer[], int size)
     QDebug deb = qDebug().nospace();
 
     qDebug() << "hexdump";
+    deb.noquote();
 
     while (bp < buffer + size) {
         uint8_t *lbp = bp;
 
         // printf("%08x  ", bp - buffer);
-        deb << QString().arg((ulong) buffer, 8, 16);
+        deb << QString("%1").arg((ulong) buffer, 8, 16);
 
         for (i = 0; i < 16; i++) {
             if (bp + i > buffer + size) {
                 break;
             }
             // printf("%02x ", (uint8_t) *lbp++);
-            deb << QString().arg((quint8) *lbp++, 2, 16) << " ";
+            deb << QString("%1").arg((quint8) *lbp++, 2, 16, QLatin1Char('0')) << " ";
         }
 
         lbp = bp;
@@ -236,8 +237,10 @@ int TeensyBDMDevice::sendCommand(BDMCommand &command)
     int size;
     uint8_t *data;
 
-    command.getBytes()->fill('A');
-    // hexdump((uint8_t *) command.getBytes()->data(), command.getBytes()->length());
+    // command.getBytes()->fill('A');
+    hexdump((uint8_t *) command.getBytes()->data(), command.getBytes()->length());
+    qDebug() << "command length = " << command.getBytes()->length();
+
     data = (uint8_t *) command.getBytes()->data();
     size = command.getBytes()->length();
 
@@ -246,7 +249,7 @@ int TeensyBDMDevice::sendCommand(BDMCommand &command)
     do
     {
         res = libusb_bulk_transfer(dev_handle, 2 | LIBUSB_ENDPOINT_OUT, data, std::min(BULK_MAX_SIZE, size), &transferred, 1000);
-	qDebug() << "libusb_bulk_transfer OUT res=" << libusb_error_name(res) << "(" << transferred << "Bytes)";
+        qDebug() << "libusb_bulk_transfer OUT res=" << libusb_error_name(res) << "(" << transferred << "Bytes)";
 
         data += transferred;
         size -= transferred;
