@@ -41,7 +41,7 @@ quint8 BDMDevice::getVersion(void)
 
     ret = sendCommand(cmd);
     if (ret)
-        return cmd.getBytes()->at(2);
+        return cmd.getOutBytes()[2];
 
     return -1;
 }
@@ -54,7 +54,7 @@ int BDMDevice::getLastStatus(void)
     ret = sendCommand(cmd);
 
     if (ret)
-        return cmd.getBytes()->at(2);
+        return cmd.getOutBytes()[2];
 
     return -1;
 }
@@ -67,7 +67,7 @@ int BDMDevice::reset(void)
     ret = sendCommand(cmd);
 
     if (ret)
-        return cmd.getBytes()->at(2);
+        return cmd.getOutBytes()[2];
 
     return -1;
 }
@@ -79,7 +79,7 @@ int BDMDevice::getStatus(void)
 
     ret = sendCommand(cmd);
     if (ret)
-        return cmd.getBytes()->at(2);
+        return cmd.getOutBytes()[2];
 
     return -1;
 }
@@ -92,7 +92,7 @@ int BDMDevice::halt(void)
     ret = sendCommand(cmd);
 
     if (ret)
-        return cmd.getBytes()->at(2);
+        return cmd.getOutBytes()[2];
 
     return -1;
 }
@@ -105,7 +105,7 @@ int BDMDevice::go(void)
     ret = sendCommand(cmd);
 
     if (ret)
-        return cmd.getBytes()->at(2);
+        return cmd.getOutBytes()[2];
 
     return -1;
 }
@@ -118,7 +118,7 @@ int BDMDevice::step(void)
     ret = sendCommand(cmd);
 
     if (ret)
-        return cmd.getBytes()->at(2);
+        return cmd.getOutBytes()[2];
 
     return -1;
 }
@@ -131,7 +131,7 @@ int BDMDevice::resync(void)
     ret = sendCommand(cmd);
 
     if (ret)
-        return cmd.getBytes()->at(2);
+        return cmd.getOutBytes()[2];
 
     return -1;
 }
@@ -144,7 +144,7 @@ int BDMDevice::assertTA(void)
     ret = sendCommand(cmd);
 
     if (ret)
-        return cmd.getBytes()->at(2);
+        return cmd.getOutBytes()[2];
 
     return -1;
 }
@@ -152,7 +152,8 @@ int BDMDevice::assertTA(void)
 quint8 BDMDevice::readMemByte(quint32 address)
 {
     quint8 val = 0;
-    BDMCommand cmd;
+    BDMCommand cmd(READ_MEM_BYTE);
+
 
     sendCommand(cmd);
 
@@ -196,7 +197,7 @@ void BDMDevice::readMemblockLong(quint32 address, QByteArray &arr)
 {
     BDMCommand cmd(READ_MEMBLOCK_LONG);
 
-    cmd.setBytes(&arr);
+    // cmd.setBytes(&arr);
     sendCommand(cmd);
 }
 

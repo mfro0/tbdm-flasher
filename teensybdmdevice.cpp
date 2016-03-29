@@ -233,15 +233,15 @@ int TeensyBDMDevice::sendCommand(BDMCommand &command)
 {
     int res = 0;
     int transferred;
-    int size;
+    size_t in_size;
+    size_t out_size;
     uint8_t *data;
 
     // command.getBytes()->fill('A');
-    hexdump((uint8_t *) command.getBytes()->data(), command.getBytes()->length());
-    qDebug() << "command length = " << command.getBytes()->length();
+    hexdump((uint8_t *) command.getOutBytes(), command.outBytesLength());
 
-    data = (uint8_t *) command.getBytes()->data();
-    size = command.getBytes()->length();
+    data = (uint8_t *) command.getOutBytes();
+    out_size = command.outBytesLength();
 
     quint8 receiveBuffer[1024];
 
@@ -249,17 +249,24 @@ int TeensyBDMDevice::sendCommand(BDMCommand &command)
     {
         do
         {
-            res = libusb_bulk_transfer(dev_handle, 2 | LIBUSB_ENDPOINT_OUT, data, std::min(BULK_MAX_SIZE, size), &transferred, 1000);
+            res = libusb_bulk_transfer(dev_handle, 2 | LIBUSB_ENDPOINT_OUT, data,
+                                       std::min(BULK_MAX_SIZE, (int) out_size), &transferred, 1000);
             qDebug() << "libusb_bulk_transfer OUT res=" << libusb_error_name(res) << "(" << transferred << "Bytes)";
 
             data += transferred;
-            size -= transferred;
-        } while (size > 0);
+            out_size -= transferred;
+        } while (out_size > 0);
 
-        res = libusb_bulk_transfer(dev_handle, 1 | LIBUSB_ENDPOINT_IN, receiveBuffer, sizeof(receiveBuffer), &transferred, 1000);
-        qDebug() << "libusb_bulk_transfer IN res=" << libusb_error_name(res) << "(" << transferred << "Bytes)";
+        do
+        {
+            res = libusb_bulk_transfer(dev_handle, 1 | LIBUSB_ENDPOINT_IN,
+                                       receiveBuffer, sizeof(receiveBuffer), &transferred, 1000);
+
+            qDebug() << "libusb_bulk_transfer IN res=" << libusb_error_name(res) << "(" << transferred << "Bytes)";
+        } while (in_size > 0);
+
+        hexdump(receiveBuffer, transferred);
     }
-    hexdump(receiveBuffer, transferred);
 
     return res;
 }

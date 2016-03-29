@@ -27,18 +27,34 @@
 
 BDMCommand::BDMCommand()
 {
-    data = new QByteArray("message to Teensy from default constructor");
+    out_buffer = 0L;
+    out_buffer_size = 0;
+
+    in_buffer = 0L;
+    in_buffer_size = 0;
 }
 
 BDMCommand::BDMCommand(BDMCommandCode cmd)
 {
-    data = new QByteArray("    a message to the Teensy");
-    data->append((quint8) (cmd & 0xff));
-    data->append((quint8) (cmd >> 8));
+    this->cmd = cmd;
+    out_buffer = 0;
+    in_buffer = 0;
 }
 
 BDMCommand::~BDMCommand()
 {
-    // delete data;
+    if (out_buffer != 0L)
+        delete [] out_buffer;
+    if (in_buffer != 0L)
+        delete [] in_buffer;
 }
 
+void BDMCommand::setOutBytes(quint8 *data, size_t length)
+{
+    this->out_buffer = new quint8[length];
+    if (this->out_buffer != 0L)
+    {
+        memcpy(this->out_buffer, data, length);
+        out_buffer_size = length;
+    }
+}

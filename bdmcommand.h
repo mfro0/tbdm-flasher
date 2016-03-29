@@ -67,12 +67,21 @@ public:
     ~BDMCommand();
 
     void setCommand(BDMCommandCode cmd) { this->cmd = cmd; }
-    QByteArray *getBytes(void) { return data; }
-    void setBytes(QByteArray *data) { this->data = data; }
 
+    quint8 *getOutBytes(void) { return out_buffer; }
+    void setOutBytes(quint8 *data, size_t length);
+    size_t outBytesLength(void) { return out_buffer_size; }
+
+    quint8 *getInBytes(void) { return in_buffer; }
+    void setInBytes(quint8 *data, size_t length);
+    size_t inBytesLength(void) { return in_buffer_size; }
 private:
     BDMCommandCode cmd;
-    QByteArray *data;
+    quint8 *in_buffer;
+    size_t in_buffer_size;
+
+    quint8 *out_buffer;
+    size_t out_buffer_size;
 };
 
 #endif // BDMCOMMAND_H
