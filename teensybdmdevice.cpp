@@ -233,11 +233,18 @@ int TeensyBDMDevice::sendCommand(BDMCommand &command)
 {
     int res = 0;
     int transferred;
-    size_t in_size;
+    size_t in_size = 0;
     size_t out_size;
     uint8_t *out_data;
 
     out_data = (uint8_t *) command.getOutBytes();
+    if (out_data == 0L)
+    {
+        out_data = new quint8[2];
+        command.setOutBytes(out_data, 2);
+    }
+    out_data[0] = command.cmd();
+    out_data[1] = 'A';
     out_size = command.outBytesLength();
 
     hexdump((uint8_t *) out_data, out_size);
@@ -260,6 +267,7 @@ int TeensyBDMDevice::sendCommand(BDMCommand &command)
         // repeat receive until we get an empty transfer
         do
         {
+            qDebug() << "receive";
             res = libusb_bulk_transfer(dev_handle, 1 | LIBUSB_ENDPOINT_IN,
                                        receiveBuffer.data(), receiveBuffer.capacity(), &transferred, 1000);
 
@@ -267,12 +275,13 @@ int TeensyBDMDevice::sendCommand(BDMCommand &command)
             if (transferred > 0)
                 receiveBuffer.resize(receiveBuffer.capacity() + BULK_MAX_SIZE);
             qDebug() << "libusb_bulk_transfer IN res=" << libusb_error_name(res) << "(" << transferred << "Bytes)";
+
         } while (transferred > 0);
 
         if (receiveBuffer.size() > 0)
-            command.setInBytes(receiveBuffer.data(), receiveBuffer.size());
+            command.setInBytes(receiveBuffer.data(), in_size);
 
-        hexdump(receiveBuffer.data(), receiveBuffer.size());
+        hexdump(receiveBuffer.data(), in_size);
     }
 
     return res;

@@ -66,8 +66,8 @@ public:
     BDMCommand(BDMCommandCode cmd);
     ~BDMCommand();
 
-    void setCommand(BDMCommandCode cmd) { this->cmd = cmd; }
-
+    void setCommand(BDMCommandCode cmd) { command = cmd; }
+    BDMCommandCode cmd(void);
     quint8 *getOutBytes(void) { return out_buffer; }
     void setOutBytes(quint8 *data, size_t length);
     size_t outBytesLength(void) { return out_buffer_size; }
@@ -76,7 +76,7 @@ public:
     void setInBytes(quint8 *data, size_t length);
     size_t inBytesLength(void) { return in_buffer_size; }
 private:
-    BDMCommandCode cmd;
+    BDMCommandCode command;
     quint8 *in_buffer;
     size_t in_buffer_size;
 

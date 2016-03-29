@@ -36,7 +36,7 @@ BDMCommand::BDMCommand()
 
 BDMCommand::BDMCommand(BDMCommandCode cmd)
 {
-    this->cmd = cmd;
+    command = cmd;
     out_buffer = 0;
     in_buffer = 0;
 }
@@ -73,4 +73,9 @@ void BDMCommand::setInBytes(quint8 *data, size_t length)
         return;
     }
     in_buffer_size = 0;
+}
+
+BDMCommandCode BDMCommand::cmd(void)
+{
+    return command;
 }
