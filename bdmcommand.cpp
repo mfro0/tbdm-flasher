@@ -56,5 +56,21 @@ void BDMCommand::setOutBytes(quint8 *data, size_t length)
     {
         memcpy(this->out_buffer, data, length);
         out_buffer_size = length;
+
+        return;
     }
+    out_buffer_size = 0;
+}
+
+void BDMCommand::setInBytes(quint8 *data, size_t length)
+{
+    this->in_buffer = new quint8[length];
+    if (this->in_buffer != 0L)
+    {
+        memcpy(this->in_buffer, data, length);
+        in_buffer_size = length;
+
+        return;
+    }
+    in_buffer_size = 0;
 }

@@ -235,37 +235,44 @@ int TeensyBDMDevice::sendCommand(BDMCommand &command)
     int transferred;
     size_t in_size;
     size_t out_size;
-    uint8_t *data;
+    uint8_t *out_data;
 
-    // command.getBytes()->fill('A');
-    hexdump((uint8_t *) command.getOutBytes(), command.outBytesLength());
-
-    data = (uint8_t *) command.getOutBytes();
+    out_data = (uint8_t *) command.getOutBytes();
     out_size = command.outBytesLength();
 
-    quint8 receiveBuffer[1024];
+    hexdump((uint8_t *) out_data, out_size);
+
+    std::vector<quint8> receiveBuffer(BULK_MAX_SIZE);
 
     if (dev_handle != NULL)
     {
+        // send out everything there is to send
         do
         {
-            res = libusb_bulk_transfer(dev_handle, 2 | LIBUSB_ENDPOINT_OUT, data,
+            res = libusb_bulk_transfer(dev_handle, 2 | LIBUSB_ENDPOINT_OUT, out_data,
                                        std::min(BULK_MAX_SIZE, (int) out_size), &transferred, 1000);
             qDebug() << "libusb_bulk_transfer OUT res=" << libusb_error_name(res) << "(" << transferred << "Bytes)";
 
-            data += transferred;
+            out_data += transferred;
             out_size -= transferred;
         } while (out_size > 0);
 
+        // repeat receive until we get an empty transfer
         do
         {
             res = libusb_bulk_transfer(dev_handle, 1 | LIBUSB_ENDPOINT_IN,
-                                       receiveBuffer, sizeof(receiveBuffer), &transferred, 1000);
+                                       receiveBuffer.data(), receiveBuffer.capacity(), &transferred, 1000);
 
+            in_size += transferred;
+            if (transferred > 0)
+                receiveBuffer.resize(receiveBuffer.capacity() + BULK_MAX_SIZE);
             qDebug() << "libusb_bulk_transfer IN res=" << libusb_error_name(res) << "(" << transferred << "Bytes)";
-        } while (in_size > 0);
+        } while (transferred > 0);
 
-        hexdump(receiveBuffer, transferred);
+        if (receiveBuffer.size() > 0)
+            command.setInBytes(receiveBuffer.data(), receiveBuffer.size());
+
+        hexdump(receiveBuffer.data(), receiveBuffer.size());
     }
 
     return res;
