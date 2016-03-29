@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with BaS_gcc.  If not, see <http://www.gnu.org/licenses/>.
+ * along with tbdm.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Copyright 2016        M. Froeschle
  *

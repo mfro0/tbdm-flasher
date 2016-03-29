@@ -188,8 +188,7 @@ void hexdump(uint8_t buffer[], int size)
     uint8_t *bp = buffer;
     QDebug deb = qDebug().nospace();
 
-    qDebug() << "hexdump";
-    deb.noquote();
+    deb.noquote();              /* suppress quotes in output */
 
     while (bp < buffer + size) {
         uint8_t *lbp = bp;
