@@ -246,18 +246,20 @@ int TeensyBDMDevice::sendCommand(BDMCommand &command)
 
     quint8 receiveBuffer[1024];
 
-    do
+    if (dev_handle != NULL)
     {
-        res = libusb_bulk_transfer(dev_handle, 2 | LIBUSB_ENDPOINT_OUT, data, std::min(BULK_MAX_SIZE, size), &transferred, 1000);
-        qDebug() << "libusb_bulk_transfer OUT res=" << libusb_error_name(res) << "(" << transferred << "Bytes)";
+        do
+        {
+            res = libusb_bulk_transfer(dev_handle, 2 | LIBUSB_ENDPOINT_OUT, data, std::min(BULK_MAX_SIZE, size), &transferred, 1000);
+            qDebug() << "libusb_bulk_transfer OUT res=" << libusb_error_name(res) << "(" << transferred << "Bytes)";
 
-        data += transferred;
-        size -= transferred;
-    } while (size > 0);
+            data += transferred;
+            size -= transferred;
+        } while (size > 0);
 
-    res = libusb_bulk_transfer(dev_handle, 1 | LIBUSB_ENDPOINT_IN, receiveBuffer, sizeof(receiveBuffer), &transferred, 1000);
-    qDebug() << "libusb_bulk_transfer IN res=" << libusb_error_name(res) << "(" << transferred << "Bytes)";
-
+        res = libusb_bulk_transfer(dev_handle, 1 | LIBUSB_ENDPOINT_IN, receiveBuffer, sizeof(receiveBuffer), &transferred, 1000);
+        qDebug() << "libusb_bulk_transfer IN res=" << libusb_error_name(res) << "(" << transferred << "Bytes)";
+    }
     hexdump(receiveBuffer, transferred);
 
     return res;
