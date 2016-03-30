@@ -198,7 +198,8 @@ void hexdump(uint8_t buffer[], int size)
 
         for (i = 0; i < 16; i++) {
             if (bp + i > buffer + size) {
-                break;
+                deb << "   ";
+                continue;
             }
             // printf("%02x ", (uint8_t) *lbp++);
             deb << QString("%1").arg((quint8) *lbp++, 2, 16, QLatin1Char('0')) << " ";
@@ -206,7 +207,7 @@ void hexdump(uint8_t buffer[], int size)
 
         lbp = bp;
         for (i = 0; i < 16; i++) {
-            int8_t c = *lbp++;
+            char c = *lbp++;
 
             if (bp + i > buffer + size) {
                 break;
